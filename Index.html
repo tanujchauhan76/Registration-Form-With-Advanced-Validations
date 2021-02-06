@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Advanced Form with JS Validation</title>
+	<link rel="stylesheet" type="text/css" href="style.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+</head>
+<body>
+	<form class="content" autocomplete="off">
+		<h1>Form Validation</h1>
+		<div class="idiv">
+		</div>
+		<div class="idiv" id="gdiv">
+			<label for="gender">Gender:</label>
+			<label id="gender"><input type="radio" name="gender" value="Male">Male</label>
+			<label id="gender"><input type="radio" name="gender" value="Female">Female</label>
+			<span class="error">Please select a gender!</span>
+		</div>
+		<div class="idiv">
+			<label for="lastname">Lastname :</label>
+			<input type="text" name="lastname" autocomplete="off" id="lastname">
+			<span class="error">Your lastname cannot be less than 2 character!</span>
+		</div>
+		<div class="idiv">
+			<label for="firstname">Firstname :</label>
+			<input type="text" name="firstname" autocomplete="off" id="firstname">
+			<span class="error">Your firstname cannot be less than 2 character!</span>
+		</div>
+		<div class="idiv">
+			<label for="age">Age :</label>
+			<input type="text" name="age" autocomplete="off" id="age">
+			<span class="error">Your age must be betwwen 5 and 150</span>
+		</div>
+		<div class="idiv">
+			<label for="username">Username :</label>
+			<input type="text" name="username" autocomplete="off" id="username">
+			<span class="error">Your username cannot be less than 5 character!</span>
+		</div>
+		<div class="idiv">
+			<label for="password">Password :</label>
+			<input type="password" name="password" autocomplete="off" id="password">
+			<span class="error">Your password cannot be less than 6 character!</span>
+		</div>
+		<div class="idiv" id="cpdiv">
+			<label for="cpassword">Password(confirmation) :</label>
+			<input type="password" name="cpassword" autocomplete="off" id="cpassword">
+			<span class="error">Password doesn't match!</span>	
+
+		</div>
+		<div class="idiv">
+			<label for="country">Country :</label>
+			<select name="country" id="country">
+				<option value="">Select a Country</option>
+				<option value="India">India</option>
+				<option value="China">China</option>
+				<option value="Norway">Norway</option>
+				<option value="Nepal">Nepal</option>
+				<option value="Russia">Russia</option>
+				<option value="Morocco">Morocco</option>
+			</select>
+			<span class="error">Please select a Country!</span>
+		</div>
+		<div class="idiv" id="checkdiv">            	
+			<label><input type="checkbox" id="subscribe" value="yes" name="subscribe">Subscribe to our newsletter</label>
+		</div>
+		<div class="idiv">
+			<input class="submit" type="submit" name="submit" value="Submit">
+			<input class="reset" type="reset" value="RAZ">
+		</div>
+	</form>
+	<script>
+		var errorColor = "red";
+		var validColor = "green";
+		$(function(){
+			resetFrom()
+			//globalizing the fields for better manipulation
+			var gender = $("input[name='gender']"),
+			lastname = $("input[name='lastname']"),
+			firstname = $("input[name='firstname']"),
+			age = $("input[name='age']"),
+			username = $("input[name='username']"),
+			password = $("input[name='password']"),
+			cpassword = $("input[name='cpassword']"),
+			country = $("select[name='country']");
+
+				country.on({
+					focus: function(){
+						$(this).css("border-color", "orange");
+					},
+					blur: function(){
+						CountryValidation($(this));
+					},
+					keyup: function(){
+						CountryValidation($(this));
+					}
+
+				}),
+				cpassword.on({
+					focus: function(){
+						$(this).css("border-color", "orange");
+					},
+					blur: function(){
+						confirmationValidation($(this));
+					},
+					keyup: function(){
+						confirmationValidation($(this));
+					}
+
+				}),age.on({
+					focus: function(){
+						$(this).css("border-color", "orange");
+					},
+					blur: function(){
+						AgeValidation($(this));
+					},
+					keyup: function(){
+						AgeValidation($(this));
+					}
+
+				}),firstname.on({
+					focus: function(){
+						$(this).css("border-color", "orange");
+					},
+					blur: function(){
+						validateName($(this));
+					},
+					keyup: function(){
+						validateName2($(this));
+					}
+
+				}),password.on({
+					focus: function(){
+						$(this).css("border-color", "orange");
+					},
+					blur: function(){
+						PasswordValidation($(this));
+					},
+					keyup: function(){
+						PasswordValidation($(this));
+					}
+
+				}),username.on({
+					focus: function(){
+						$(this).css("border-color", "orange");
+					},
+					blur: function(){
+						UsernameValidation($(this));
+					},
+					keyup: function(){
+						UsernameValidation($(this));
+					}
+
+				}),lastname.on({
+					focus: function(){
+						$("lastname").css("border-color", "orange");
+					},
+					blur: function(){
+						validateName($(this));
+					},
+					keyup: function(){
+						validateName($(this));
+					}
+				});
+
+//when the form submits
+$("form").submit(function(){
+	resetFrom()
+	var validated = true,
+	formValue = "";
+				validated = validateName(lastname),validateName(firstname),UsernameValidation(username),PasswordValidation(password),AgeValidation(age),CountryValidation(country);
+
+
+				if(!gender.is(":checked")){
+					gender.parent().css("color", errorColor);
+					gender.parents("#gdiv").find(".error").show("slow");
+					validated = false;
+				}else{
+					gender.parents("#gdiv").find(".error").hide("slow");
+
+				}
+
+				if(country.val() == ""){
+					country.css("border-color", errorColor);
+					country.next().show("slow");
+					validated = false;
+				}else{
+					country.next().hide("slow");
+
+				}
+
+				if(password.val()!=cpassword.val() || cpassword.val() ==""){
+					cpassword.css("border-color", errorColor);
+					cpassword.next().show("slow");
+					validated = false;
+				}else{
+					cpassword.next().hide("slow");
+				}
+
+				var gendervalue = $("input[name='gender']:checked").val();
+
+				var subscribed="";
+
+				if ($("subscribe").filter('checked')== "")
+					{
+						subscribed = "yes";
+					}
+				else{
+					subscribed= "no";}
+
+
+				if(validated ==true){
+					formValue += " Gender :" + " " + gender.filter(":checked").val() + "\n";
+					formValue += " Lastname : " + "" + lastname.val() + "\n";
+					formValue += " Firstname : " + "" + firstname.val() + "\n";
+					formValue +=	" Age : "  + age.val() + "\n";
+					formValue +=	" Username : "  + username.val() + "\n";
+					formValue  +=  " Password : " + password.val() + "\n";
+					formValue  +=  " Confirm Password : " + cpassword.val() + "\n";
+					formValue +=	" Country : "  + country.val() + "\n";
+					formValue +=	" NewsLetter Subscribe : "  + subscribed + "\n";
+
+					validated = confirm("Form Submitted\n\n" + formValue);
+				}
+
+				return validated;
+			});
+
+//when the form reset is triggerred, call my reset function as well
+$("input[type='reset']").click(function(){
+	resetFrom()
+});
+
+
+
+});
+
+function validateName(el){
+	var valid = true;
+	if(el.val().length < 2){
+		el.css("border-color", errorColor);
+		el.next().show("slow");
+		valid = false;
+	}else{
+		el.css("border-color", validColor);
+		el.next().hide("slow");
+	}
+	return valid;
+}
+function validateName2(el){
+	var valid = true;
+	if(el.val().length < 2){
+		el.css("border-color", errorColor);
+		el.next().show("slow");
+		valid = false;
+	}else{
+		el.css("border-color", validColor);
+		el.next().hide("slow");
+	}
+	return valid;
+}
+
+function UsernameValidation(el){
+	var valid = true;
+	if(el.val().length <5){
+		el.css("border-color", errorColor);
+		el.next("span").show("slow");
+		valid = false;
+	}else{
+		el.css("border-color", validColor);
+		el.next("span").hide("slow");		}
+		return valid;
+	}
+
+	function PasswordValidation(el){
+		var valid = true;
+		if(el.val().length <6){
+			el.css("border-color", errorColor);
+			el.next("span").show("slow");
+			valid = false;
+		}else{
+			el.css("border-color", validColor);
+			el.next("span").hide("slow");		}
+			return valid;
+		}
+
+		function cpValidation(el){
+			var valid = true;
+
+			
+			return valid;
+
+		}
+		function CountryValidation(el){
+			var valid = true;
+			if(el.val() == ""){
+				el.css("border-color", errorColor);
+				el.next("span").show("slow");
+				valid= false;
+			}else{
+				el.css("border-color", validColor);
+				el.next("span").hide("slow");
+			}
+			return valid;
+
+		}
+		function AgeValidation(el){
+			var valid=true;
+			if(el.val() == ""){
+				el.css("border-color", errorColor);
+				el.next().text("Age cannot be empty!");
+				el.next().show("slow");
+				valid = false;
+			}else if(isNaN(el.val())){
+				el.css("border-color", errorColor);
+				el.next().text("Age should be a number!");
+				el.next().show("slow");
+				valid = false;
+			}else if(parseInt(el.val()) < 5 || parseInt(el.val()) > 151){
+				el.css("border-coloelr", errorColor);
+				el.next().text("Age must be between 5 and 150");
+				el.next().show("slow");
+				valid = false;
+			}else{
+				el.css("border-color", validColor);
+				el.next("span").hide("slow");
+			}
+			return valid;
+		}
+
+
+//function to rest the form
+function resetFrom(){
+	$(".error").hide();
+	$("form input, form select").css("border-color", "gray");
+	$("label").css("color", "black");
+}
+
+</script>
+</body>
+</html>

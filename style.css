@@ -1,0 +1,58 @@
+body{
+	padding-top: 50px;
+}
+h1{
+	margin-left: 150px;
+}
+.content{
+	width:750px;
+	margin:0 auto;
+	border:2px solid black;
+	border-radius:5px;
+}
+.idiv{
+	padding-left:60px;
+	margin-bottom: 20px;
+}
+#gdiv label#gender {
+	width:95px;
+}
+#gdiv label#gender input{
+vertical-align: bottom;}
+input{
+	border: 1px solid black;
+    border-radius: 3px;
+    height:18px;
+}
+label{
+	display: inline-block;
+	width: 20%;
+}
+.error{
+	margin-left: 20px;
+		color:black;
+	opacity: 0.5;
+
+	border: 1px solid black;
+	background-color: gray;
+	padding: 1.5px;
+	border-radius: 5px;
+}
+div#cpdiv {
+	padding-left: 15px;
+}
+div#cpdiv label{
+	width:25%;
+}
+div#gdiv .error{
+	margin:0;
+}
+div#checkdiv{
+padding-left: 200px;
+}
+div#checkdiv label{
+width:600px;
+}
+	form input[type="submit"]{
+	margin:0 25px 0 150px;
+}
